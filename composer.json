@@ -1,0 +1,21 @@
+{
+    "name": "swoole-demo",
+    "description": "swoole demo project",
+    "keywords": [],
+    "license": "GPL",
+    "type": "project",
+    "require": {
+        "php": ">=7.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/"
+        }
+    },
+    "repositories": {
+        "packagist": {
+            "type": "composer",
+            "url": "https://packagist.laravel-china.org"
+        }
+    }
+}
