@@ -12,6 +12,7 @@ class HomeController extends Controller
 
     public function test()
     {
+        $this->server->task(\App\task\SendSmsTask::class, []);
         return $this->json([
             'article' => [
                 'id' => 1,

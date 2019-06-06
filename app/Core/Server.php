@@ -15,6 +15,7 @@ class Server {
         $this->serv = new \Swoole\Http\Server("0.0.0.0", 8080);
         $this->serv->set([
             'worker_num' => 2,
+            'task_worker_num' => 4,
             'max_request' => 4,
             //'document_root' => '',
             'enable_static_handler' => true,
@@ -24,6 +25,8 @@ class Server {
         $this->serv->on('WorkerStart', [$this, 'onWorkStart']);
         $this->serv->on('ManagerStart', [$this, 'onManagerStart']);
         $this->serv->on('Request', [$this, 'onRequest']);
+        $this->serv->on('Task', [$this, 'onTask']);
+        $this->serv->on('Finish', [$this, 'onFinish']);
     }
     
     public function run()
@@ -86,5 +89,37 @@ class Server {
             $response->header("Content-Type", "text/html; charset=utf-8");
             $response->end('404 not found');
         }
+
+        echo "### onRequest end ####" . PHP_EOL . PHP_EOL;
+    }
+
+    public function onTask($server, $task_id, $from_id, $data)
+    {
+        echo "#### onTask:{$task_id} ####" . PHP_EOL;
+        $cls = $data['cls'];
+        if (class_exists($cls)) {
+            $obj = new $cls();
+            $obj->handler($data['params']);
+            $this->serv->finish(['error'=>false]);
+        } else {
+            echo "task not found:" . $cls . PHP_EOL;
+        }
+        echo "#### onTask:{$task_id} end ####" . PHP_EOL . PHP_EOL;
+    }
+
+    public function onFinish($server, $task_id, $data)
+    {
+        echo "### onFinish:{$task_id} ####" . PHP_EOL;
+        if ($data['error']){
+            echo "task {$task_id} failed" . PHP_EOL;
+        }
+        echo "task {$task_id} finished" . PHP_EOL;
+        echo "### onFinish:{$task_id} end ####" . PHP_EOL . PHP_EOL;
+    }
+
+    public function task($cls, $params)
+    {
+        $task_id = $this->serv->task(['cls'=>$cls, 'params'=>$params]);
+        echo "task start id: {$task_id}" . PHP_EOL;
     }
 }
