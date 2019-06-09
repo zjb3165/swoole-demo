@@ -12,7 +12,7 @@ class ProductController extends Controller
     
     public function show()
     {
-        $id = $this->request->get['id'];
+        $id = $this->request->get('id');
         return 'product show : ' . $id;
     }
 }

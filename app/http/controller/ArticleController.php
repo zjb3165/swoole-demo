@@ -12,7 +12,7 @@ class ArticleController extends Controller
     
     public function show()
     {
-        $id = $this->request->get['id'];
+        $id = $this->request->get('id');
         return $this->render('article/show', ['article'=>['id'=>$id, 'title'=>'adfasdfasd', 'content'=>'asdlfjasdlkfjl23']]);
     }
 }
