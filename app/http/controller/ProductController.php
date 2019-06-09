@@ -10,9 +10,8 @@ class ProductController extends Controller
         return 'product index';
     }
     
-    public function show()
+    public function show($id)
     {
-        $id = $this->request->get('id');
         return 'product show : ' . $id;
     }
 }

@@ -31,6 +31,8 @@ class Application extends Container {
         $this->serv->on('Request', [$this, 'onRequest']);
         $this->serv->on('Task', [$this, 'onTask']);
         $this->serv->on('Finish', [$this, 'onFinish']);
+
+        $this->initRoute();
     }
 
     protected function initConfig()
@@ -43,6 +45,13 @@ class Application extends Container {
             $this->config->set('http.' . $key, $val);
         }
         $this->view_path = $this->base_path . '/' . $this->config->get('http.view_path');
+    }
+
+    protected function initRoute()
+    {
+        $this->make('route', function(){
+            return new Route($this);
+        });
     }
     
     public function run()
@@ -84,7 +93,9 @@ class Application extends Container {
         $req = new Request($request);
         $rep = new Response($response);
 
-        $controller = 'home';
+        $this->route->run($req, $rep);
+
+        /*$controller = 'home';
         $action = 'index';
         $path_array = array_filter(explode('/', substr($path_info, 1)), function($val){ return $val != '';});
         if (is_array($path_array)) {
@@ -107,7 +118,7 @@ class Application extends Container {
         } else {
             $response->header("Content-Type", "text/html; charset=utf-8");
             $response->end('404 not found');
-        }
+        }*/
 
         echo "### onRequest end ####" . PHP_EOL . PHP_EOL;
     }

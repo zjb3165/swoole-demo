@@ -6,9 +6,11 @@ use Swoole\Http\Request as HttpRequest;
 class Request
 {
     private $request;
+    private $server_info;
     public function __construct(HttpRequest $request)
     {
         $this->request = $request;
+        $this->server_info = $request->server;
     }
     
     public function __get($key)
@@ -19,6 +21,16 @@ class Request
     public function __set($key, $val)
     {
         $this->request->$key = $val;
+    }
+    
+    public function method()
+    {
+        return isset($this->server_info['request_method']) ? $this->server_info['request_method'] : 'get';
+    }
+
+    public function path()
+    {
+        return isset($this->server_info['path_info']) ? $this->server_info['path_info'] : '/';
     }
 
     public function get($key, $default=null)

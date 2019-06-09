@@ -7,7 +7,14 @@ class HomeController extends Controller
 {
     public function index()
     {
-        return $this->render('home/index');
+        //return $this->render('home/index');
+        $pattern = '/\/home\/index\/(\d+)/';
+        $pattern = '{^/home/([a-zA-Z]+)/index/(\d+)$}xm';
+        $mathes = [];
+        if (preg_match($pattern, '/home/abc/index/5', $mathes)) {
+            var_dump($mathes);
+        }
+        return json_encode($mathes, JSON_PRETTY_PRINT);
     }
 
     public function test()
