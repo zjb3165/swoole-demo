@@ -1,8 +1,26 @@
 <?php
 namespace App\Core;
 
-class Request extends \Swoole\Http\Request
+use Swoole\Http\Request as HttpRequest;
+
+class Request
 {
+    private $request;
+    public function __construct(HttpRequest $request)
+    {
+        $this->request = $request;
+    }
+    
+    public function __get($key)
+    {
+        return $this->request->$key;
+    }
+    
+    public function __set($key, $val)
+    {
+        $this->request->$key = $val;
+    }
+
     public function get($key, $default=null)
     {
         return isset($this->get[$key]) ? $this->get[$key] : $default;

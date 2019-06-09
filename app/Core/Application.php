@@ -6,6 +6,7 @@ class Application extends Container {
     public $base_path;
     public $app_path;
     public $config_path;
+    public $view_path;
 
     public function __construct($base_path) 
     {
@@ -41,6 +42,7 @@ class Application extends Container {
         foreach($http_configs as $key=>$val) {
             $this->config->set('http.' . $key, $val);
         }
+        $this->view_path = $this->base_path . '/' . $this->config->get('http.view_path');
     }
     
     public function run()
@@ -79,7 +81,10 @@ class Application extends Container {
             return $response->end();
         }
 
-        /*$controller = 'home';
+        $req = new Request($request);
+        $rep = new Response($response);
+
+        $controller = 'home';
         $action = 'index';
         $path_array = array_filter(explode('/', substr($path_info, 1)), function($val){ return $val != '';});
         if (is_array($path_array)) {
@@ -93,7 +98,7 @@ class Application extends Container {
         
         $cls = '\\App\\http\\controller\\' . ucwords($controller) . 'Controller';
         if (class_exists($cls)) {
-            $c = new $cls($this, $request, $response);
+            $c = new $cls($this, $req, $rep);
             $result = '';
             if (method_exists($c, $action)) {
                 $result = $c->$action();
@@ -102,7 +107,7 @@ class Application extends Container {
         } else {
             $response->header("Content-Type", "text/html; charset=utf-8");
             $response->end('404 not found');
-        }*/
+        }
 
         echo "### onRequest end ####" . PHP_EOL . PHP_EOL;
     }

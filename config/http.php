@@ -9,5 +9,5 @@ return [
     'max_request' => 4,
     'enable_static_handler' => true,
     'daemonize' => false,
-    'view_path' => 'resources/view',
+    'view_path' => 'resources/views',
 ];

@@ -1,9 +1,6 @@
 <?php
 namespace App\Core;
 
-use Swoole\Http\Request;
-use Swoole\Http\Response;
-
 class Controller
 {
     protected $app;
@@ -19,7 +16,8 @@ class Controller
     
     public function render($view, $data=[])
     {
-        $file = $this->app->view_path . '/views/' . $view . '.php';
+        $file = $this->app->view_path . '/' . $view . '.php';
+        echo $file . PHP_EOL;
         if (file_exists($file)) {
             if (!empty($data)) {
                 extract($data);
