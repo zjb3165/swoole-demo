@@ -1,25 +1,28 @@
 <?php
 namespace App\Core;
 
-class Server {
+class Application extends Container {
     private $serv;
     public $base_path;
     public $app_path;
-    public $view_path;
+    public $config_path;
+
     public function __construct($base_path) 
     {
         $this->base_path = $base_path;
         $this->app_path = $base_path . '/app';
-        $this->view_path = $base_path . '/resources';
+        $this->config_path = $base_path . '/config';
 
-        $this->serv = new \Swoole\Http\Server("0.0.0.0", 8080);
+        $this->initConfig();
+
+        $this->serv = new \Swoole\Http\Server($this->config->get('http.host', '127.0.0.1'), $this->config->get('http.port', 8080));
         $this->serv->set([
-            'worker_num' => 2,
-            'task_worker_num' => 4,
-            'max_request' => 4,
+            'worker_num' => $this->config->get('http.worker_num', 2),
+            'task_worker_num' => $this->config->get('http.task_worker_num', 4),
+            'max_request' => $this->config->get('http.max_request', 4),
             //'document_root' => '',
-            'enable_static_handler' => true,
-            'daemonize' => false,
+            'enable_static_handler' => $this->config->get('http.enable_static_handler', true),
+            'daemonize' => $this->config->get('http.daemonize', false),
         ]);
         $this->serv->on('Start', [$this, 'onStart']);
         $this->serv->on('WorkerStart', [$this, 'onWorkStart']);
@@ -27,6 +30,17 @@ class Server {
         $this->serv->on('Request', [$this, 'onRequest']);
         $this->serv->on('Task', [$this, 'onTask']);
         $this->serv->on('Finish', [$this, 'onFinish']);
+    }
+
+    protected function initConfig()
+    {
+        $this->make('config', function(){
+            return new Config([]);
+        });
+        $http_configs = require_once($this->config_path . '/http.php');
+        foreach($http_configs as $key=>$val) {
+            $this->config->set('http.' . $key, $val);
+        }
     }
     
     public function run()
@@ -65,7 +79,7 @@ class Server {
             return $response->end();
         }
 
-        $controller = 'home';
+        /*$controller = 'home';
         $action = 'index';
         $path_array = array_filter(explode('/', substr($path_info, 1)), function($val){ return $val != '';});
         if (is_array($path_array)) {
@@ -88,7 +102,7 @@ class Server {
         } else {
             $response->header("Content-Type", "text/html; charset=utf-8");
             $response->end('404 not found');
-        }
+        }*/
 
         echo "### onRequest end ####" . PHP_EOL . PHP_EOL;
     }

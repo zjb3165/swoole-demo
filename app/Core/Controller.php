@@ -6,19 +6,20 @@ use Swoole\Http\Response;
 
 class Controller
 {
-    protected $server;
+    protected $app;
     protected $request;
     protected $response;
     
-    public function __construct(Server $server, Request $request, Response $response)
+    public function __construct(Application $app, Request $request, Response $response)
     {
-        $this->server = $server;
+        $this->app = $app;
         $this->request = $request;
+        $this->response = $response;
     }
     
     public function render($view, $data=[])
     {
-        $file = $this->server->view_path . '/views/' . $view . '.php';
+        $file = $this->app->view_path . '/views/' . $view . '.php';
         if (file_exists($file)) {
             if (!empty($data)) {
                 extract($data);
