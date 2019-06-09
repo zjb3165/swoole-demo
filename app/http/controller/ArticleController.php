@@ -10,9 +10,8 @@ class ArticleController extends Controller
         return 'article index';
     }
     
-    public function show()
+    public function show($id)
     {
-        $id = $this->request->get('id');
         return $this->render('article/show', ['article'=>['id'=>$id, 'title'=>'adfasdfasd', 'content'=>'asdlfjasdlkfjl23']]);
     }
 }

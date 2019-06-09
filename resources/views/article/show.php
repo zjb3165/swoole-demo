@@ -6,7 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title><?php echo $article['title']?></title>
 </head>
-<body>
+<body>  
+    <h1><?php echo $article['id']?></h1>
     <h1><?php echo $article['title']?></h1>
     <div><?php echo $article['content']?></div>
 </body>

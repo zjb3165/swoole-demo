@@ -66,7 +66,7 @@ class Route
                 if (count($matches) > 1) {
                     $params = array_slice($matches, 1);
                 }
-                return [$controller, $action, $params];
+                return [$controller, $action, 'params'=>$params];
             }
         }
 
@@ -88,7 +88,7 @@ class Route
         }
         $controller = new $class($this->app, $request, $response);
         $action = $array[1];
-        $params = count($array) > 2 ? array_slice($array, 2) : [];
+        $params = isset($array['params']) ? $array['params'] : [];
         if (method_exists($controller, $action) == false) {
             throw new NotFoundException();
         }
