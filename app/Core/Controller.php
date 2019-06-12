@@ -17,7 +17,7 @@ class Controller
     public function render($view, $data=[])
     {
         $file = $this->app->view_path . '/' . $view . '.php';
-        echo $file . PHP_EOL;
+        //echo $file . PHP_EOL;
         if (file_exists($file)) {
             if (!empty($data)) {
                 extract($data);

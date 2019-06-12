@@ -58,10 +58,15 @@ class Route
         foreach($this->rules as $path=>$rule)
         {
             if (preg_match($path, $uri, $matches)) {
-                if (isset($rule['method']) && $method != $rule['method']) {
+                if (isset($rule['method']) && strtoupper($method) != strtoupper($rule['method'])) {
                     throw new NotAllowedMethodException();
                 }
-                list($controller, $action) = explode('@', $rule[0]);
+                if ($rule[0] == '{controller}@{action}') {
+                    $controller = $matches[1];
+                    $action = $matches[2];
+                } else {
+                    list($controller, $action) = explode('@', $rule[0]);
+                }
                 $params = [];
                 if (count($matches) > 1) {
                     $params = array_slice($matches, 1);
@@ -82,6 +87,7 @@ class Route
         if (count($array) < 2) {
             throw new NotFoundException();
         }
+        echo $array[0] . PHP_EOL;
         $class = '\\App\\http\\controller\\' . ucwords($array[0]) . 'Controller';
         if (!class_exists($class)) {
             throw new NotFoundException();
